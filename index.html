@@ -1,151 +1,315 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>Web/Bin 設定+分配 v14</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web/Bin 設定與分配 v16</title>
 
   <style>
-    body {
-      font-family: Arial, "Microsoft JhengHei", sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
+    :root{
+      --bg: #f5f7fb;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --text:#111827;
+      --line:#e5e7eb;
+      --primary:#2563eb;
+      --primary-2:#1d4ed8;
+      --success:#16a34a;
+      --warn:#f59e0b;
+      --error:#ef4444;
+      --note-bg:#f2f5ff;
+      --note-line:#3b6ff9;
+      --radius: 12px;
+      --shadow: 0 6px 20px rgba(17,24,39,0.08);
     }
-    .container {
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      background:var(--bg);
+      font-family: system-ui, -apple-system, "Segoe UI",
+                   "Microsoft JhengHei", Arial, sans-serif;
+      color:var(--text);
+    }
+
+    /* WB 專用：寬版但仍保留 GEN 風格 */
+    .page{
       max-width: 1100px;
-      margin: 20px auto;
-      padding: 20px;
-      background: #ffffff;
+      margin: 20px auto 48px;
+      padding: 0 18px;
+    }
+
+    /* Header */
+    .header{
+      background: linear-gradient(135deg, #ffffff 0%, #f7f9ff 100%);
+      border:1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px 18px 14px;
+      box-shadow: var(--shadow);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+    .title-wrap{
+      display:flex; flex-direction:column; gap:4px;
+    }
+    h1{
+      margin:0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    .subtitle{
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .chip{
+      font-size:12px;
+      padding:6px 10px;
+      background:#eef2ff;
+      color:#3730a3;
+      border-radius:999px;
+      border:1px solid #e0e7ff;
+      white-space:nowrap;
+    }
+
+    /* Cards / Steps */
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 16px 14px;
+      margin-bottom:14px;
+      position: relative;
+    }
+    .card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:10px;
+    }
+    .step{
+      display:flex; align-items:center; gap:10px;
+    }
+    .step-badge{
+      width:30px; height:30px;
+      border-radius:8px;
+      background:#eef2ff;
+      color:#3730a3;
+      font-weight:700;
+      display:flex; align-items:center; justify-content:center;
+      border:1px solid #e0e7ff;
+      flex: 0 0 auto;
+    }
+    .card-title{
+      font-size:17px;
+      font-weight:700;
+    }
+
+    /* Toggle note button */
+    .toggle-btn{
+      cursor:pointer;
+      font-size:12px;
+      color:var(--primary);
+      user-select:none;
+      display:flex; align-items:center; gap:6px;
+      padding:6px 8px;
+      border-radius:8px;
+      border:1px dashed #dbe3ff;
+      background:#f8faff;
+      white-space:nowrap;
+    }
+    .toggle-btn:hover{ background:#eef2ff; }
+
+    .note-box{
+      background: var(--note-bg);
+      border-left: 4px solid var(--note-line);
+      padding: 12px 14px;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      line-height: 1.6;
+      color:#0f172a;
+      font-size:13px;
+      margin-top: 10px;
+      white-space: pre-line;
     }
-    h2 {
-      font-size: 18px;
-      margin-top: 24px;
-      margin-bottom: 8px;
+    .hidden{ display:none; }
+
+    /* Form 樣式（桌機3欄） */
+    .form-row{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px 12px;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      margin-bottom: 12px;
+    @media (max-width: 900px){
+      .form-row{ grid-template-columns: 1fr; }
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 6px 8px;
-      font-size: 13px;
-      text-align: left;
+    .form-item{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
     }
-    th {
-      background: #fafafa;
+    label{
+      font-size:14px;
+      font-weight:600;
+      color:#111827;
     }
-    input[type="text"],
-    input[type="number"],
-    select {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 4px 6px;
-      font-size: 13px;
+    .hint{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
     }
+    input[type="number"], input[type="text"]{
+      width:100%;
+      height:36px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border:1px solid var(--line);
+      outline:none;
+      font-size:14px;
+      background:#fff;
+    }
+    input[type="file"]{
+      width:100%;
+      padding:8px;
+      border:1px dashed var(--line);
+      border-radius: 8px;
+      background:#fafafa;
+      font-size:14px;
+    }
+
+    /* 表格 */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:6px;
+      font-size:13px;
+    }
+    th, td{
+      border-bottom:1px solid #e5e7eb;
+      padding:8px 6px;
+      vertical-align: middle;
+    }
+    th{
+      background:#f9fafb;
+      font-weight:600;
+    }
+
+    /* Buttons */
+    .btn{
+      border:0;
+      cursor:pointer;
+      font-size:15px;
+      font-weight:700;
+      padding: 10px 16px;
+      border-radius: 10px;
+      display:inline-flex; align-items:center; gap:8px;
+      transition: transform .05s ease, background .15s ease, opacity .15s;
+    }
+    .btn-primary{
+      background:var(--primary);
+      color:#fff;
+      box-shadow: 0 6px 14px rgba(37,99,235,0.25);
+    }
+    .btn-primary:hover{ background:var(--primary-2); }
+    .btn-secondary{
+      background:#0ea5a5;
+      color:#fff;
+      box-shadow: 0 6px 14px rgba(14,165,165,0.24);
+    }
+    .btn-danger{
+      background:#ef4444;
+      color:#fff;
+    }
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:10px;
+      flex-wrap:wrap;
+    }
+
+    #summary-area{
+      margin-top:12px;
+      font-size:13px;
+      background:#f9fafb;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid var(--line);
+    }
+
+    /* ✅ 統一寬度用（第6段加 class 後就會生效） */
+    .uniform-cell input,
+    .uniform-cell select,
+    .uniform-cell .kta-row input{
+      width: 70px !important;
+      max-width: 70px !important;
+    }
+
 .kta-row {
   display: flex;
-  gap: 4px;
+  gap: 6px;
+  white-space: nowrap;   /* 🔥 這一行 = 永遠不換行 */
 }
-.kta {
-  width: 60px !important;
-  padding: 4px 6px;
-  font-size: 13px;
-  box-sizing: border-box;
+
+/* ✅ Bin：三欄平均三等份（只影響 Bin 表格） */
+#bin-table th.bin-uniform,
+#bin-table td.bin-uniform{
+  width:33%;
 }
-    .row-line {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .row-line label {
-      white-space: nowrap;
-      font-size: 13px;
-    }
-    .row-line input[type="number"] {
-      width: 80px;
-    }
-    .btn {
-      padding: 6px 12px;
-      font-size: 13px;
-      border-radius: 4px;
-      border: 1px solid #999;
-      background: #f0f0f0;
-      cursor: pointer;
-      margin-right: 6px;
-    }
-    .btn-primary {
-      border-color: #007bff;
-      background: #007bff;
-      color: #fff;
-    }
-    .btn-danger {
-      border-color: #dc3545;
-      background: #dc3545;
-      color: #fff;
-    }
-    .btn[disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .card {
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
-      padding: 12px;
-      background: #fff;
-      margin-bottom: 16px;
-    }
-    .hint {
-      font-size: 12px;
-      color: #777;
-      margin-top: 4px;
-    }
-    .step-title {
-      margin-bottom: 4px;
-    }
-    #summary-area {
-      margin-top: 10px;
-      max-height: 320px;
-      overflow: auto;
-      font-size: 12px;
-    }
-/* 固定 Red% 與 Other% 為 4 位數寬度 */
-.web-red,
-.web-other {
-  width: 60px !important;
+
+#bin-table td.bin-uniform input{
+  width:100% !important;
+  max-width:100% !important;
 }
-/* TG 格式 與 TG Cnt 一樣寬 */
-.web-tg-format,
-.web-tg-cnt {
-  width: 80px !important;   /* 可改 70、90 都可以 */
+
+/* ✅ 刪除欄位靠最右 */
+#web-table td:last-child,
+#bin-table td:last-child{
+  text-align:right;
+  width:1%;
+  white-space:nowrap;
 }
-/* 重新設定大萬/小萬 右邊格子寬度 */
-#red-big,
-#red-small {
-  width: 130px !important;   /* 想要寬一點改這裡 */
+
+/* Summary 表格：表頭 + 內容 全部靠左 */
+#summary-area table th,
+#summary-area table td {
+  text-align: left !important;
 }
-</style>
+
+  </style>
 </head>
 
 <body>
-<div class="container">
+<div class="page">
 
-  <!-- 步驟 1 -->
-  <h2 class="step-title">步驟 1：設定 Web &amp; Bin</h2>
+  <div class="header">
+    <div class="title-wrap">
+      <h1>Web/Bin 設定與分配</h1>
+      <div class="subtitle"></div>
+    </div>
+    <div class="chip">RNG Tools</div>
+  </div>
 
-  <div class="card">
-    <h3 style="margin:0;font-size:16px;">Web 設定</h3>
-    <div class="hint">
-      ・每一列 Web 的 <strong>Key + TG + ARA = 100</strong><br>
-      ・全部 Web 的 <strong>Red%</strong> = 100<br>
-      ・全部 Web + Bin 的 <strong>Other%</strong> = 100<br>
-      ・TG 格式可選：星期 ID 號碼 大-小 或 ID 星期 號碼 大-小<br>
+  <!-- Step 1：Web 設定 -->
+  <section class="card">
+    <div class="card-head">
+      <div class="step">
+        <div class="step-badge">1</div>
+        <div class="card-title">設定 Web</div>
+      </div>
+      <div class="toggle-btn" onclick="toggleNote('note-web', this)">ⓘ 顯示說明</div>
+    </div>
+
+    <div id="note-web" class="note-box hidden">
+・每一列 Web 的「Key + TG + ARA = 100」
+・全部 Web 的 Red% 總和 = 100
+・全部 Web + Bin 的 Other% 總和 = 100
+・TG 格式可選：星期 ID 號碼 大-小 / ID 星期 號碼 大-小
+・用來分配紅字與其他號碼
     </div>
 
     <table id="web-table">
@@ -157,76 +321,140 @@
           <th>TG 格式</th>
           <th>TG Cnt</th>
           <th>Key / TG / ARA</th>
-          <th>Red %</th>
-          <th>Other %</th>
-          <th>刪除</th>
+          <th>Red%</th>
+          <th>Other%</th>
+          <th></th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
 
-    <button class="btn" id="add-web-row-btn">+ 新增 Web 列</button>
+    <div class="actions" style="justify-content:flex-start;">
+      <button class="btn-primary" id="add-web-row-btn">+ 新增 Web </button>
+    </div>
+  </section>
+
+  <!-- Step 2：Bin 設定 -->
+  <section class="card">
+    <div class="card-head">
+      <div class="step">
+        <div class="step-badge">2</div>
+        <div class="card-title">設定 Bin</div>
+      </div>
+      <div class="toggle-btn" onclick="toggleNote('note-bin', this)">ⓘ 顯示說明</div>
+    </div>
+
+    <div id="note-bin" class="note-box hidden">
+・全部 Web + Bin 的 Other% 總和 = 100
+・Bin 只有 ARA（沒有 Key / TG）
+・Other% 代表「其他號碼」分到 Bin 的比例
+    </div>
+
+<table id="bin-table">
+  <thead>
+    <tr>
+      <th class="bin-uniform">Co. Name</th>
+      <th class="bin-uniform">ARA ID</th>
+      <th class="bin-uniform">Other%</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<div class="actions" style="justify-content:flex-start;">
+  <button class="btn-primary" id="add-bin-row-btn">+ 新增 Bin </button>
+</div>
+</section>
+
+  <!-- Step 3：上傳檔案 -->
+  <section class="card">
+    <div class="card-head">
+      <div class="step">
+        <div class="step-badge">3</div>
+        <div class="card-title">上傳紅字 / 其他字（含重新設定大萬小萬）</div>
+      </div>
+      <div class="toggle-btn" onclick="toggleNote('note-upload', this)">ⓘ 顯示說明</div>
+    </div>
+
+    <div id="note-upload" class="note-box hidden">
+紅字 TXT 格式：
+0001 2 4
+1234 2 4
+（可只有 4 位數，Big/Small 會用「重新設定」覆蓋）
+
+其他字 TXT 格式（含 r）：
+5678 1 2
+8888r 1 0
+（r 會依規則只進 Web-Key 或 Web-TG）
+
+⚠️ 星期必填，按「分配」與「下載」前會檢查。
+    </div>
+
+    <div class="form-row" style="margin-top:6px;">
+      <div class="form-item" style="grid-column:1/-1;">
+        <label>上傳紅字 TXT</label>
+        <input type="file" id="red-file" accept=".txt" />
+        <div class="hint">上傳紅字檔案後，可選擇是否重新覆蓋 Big / Small</div>
+      </div>
+    </div>
+
+<div class="form-row">
+  <div class="form-item">
+    <label>重新設定紅字大萬 (Big)</label>
+    <input type="number" id="red-big" placeholder="不填則保留原本" step="0.01" />
+    <div class="hint">只套用紅字檔（可留空）</div>
   </div>
-
-  <!-- Bin 設定 -->
-  <div class="card">
-    <h3 style="margin:0;font-size:16px;">Bin 設定</h3>
-    <div class="hint">
-      ・全部 Web + Bin 的 Other% = 100<br>
-      ・Bin 只有 ARA（沒有 Key/TG）
-    </div>
-
-    <table id="bin-table">
-      <thead>
-        <tr>
-          <th>Co. Name</th>
-          <th>ARA ID</th>
-          <th>Other %</th>
-          <th>刪除</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <button class="btn" id="add-bin-row-btn">+ 新增 Bin 列</button>
+  <div class="form-item">
+    <label>重新設定紅字小萬 (Small)</label>
+    <input type="number" id="red-small" placeholder="不填則保留原本" step="0.01" />
+    <div class="hint">只套用紅字檔（可留空）</div>
   </div>
-
-  <!-- 步驟 2 -->
-  <h2 class="step-title">步驟 2：上傳檔案</h2>
-
-  <div class="card">
-    <div class="row-line">
-      <label>上傳紅字 TXT：</label>
-      <input type="file" id="red-file" accept=".txt">
-      <label>重新設定大萬：</label>
-      <input type="number" id="red-big" placeholder="不填則保留原本" step="0.01">
-      <label>重新設定小萬：</label>
-      <input type="number" id="red-small" placeholder="不填則保留原本" step="0.01">
-    </div>
-
-    <div class="row-line">
-      <label>上傳其他字 TXT：</label>
-      <input type="file" id="other-file" accept=".txt">
-      <label>星期：</label>
-      <input type="number" id="other-week" step="1">
-    </div>
+  <div class="form-item">
+    <label>星期（必填）</label>
+    <input type="number" id="other-week" step="1" placeholder="例如：3" />
+    <div class="hint">按「分配 / 下載」前一定要填寫</div>
   </div>
+</div>
 
-  <!-- 步驟 3 -->
-  <h2 class="step-title">步驟 3：分配 & 下載（Web/Bin分開下載）</h2>
+    <div class="form-row" style="margin-top:6px;">
+      <div class="form-item" style="grid-column:1/-1;">
+        <label>上傳其他字 TXT</label>
+        <input type="file" id="other-file" accept=".txt" />
+        <div class="hint">包含一般號碼與 r 號碼</div>
+      </div>
+    </div>
+  </section>
 
-  <div class="card">
-    <div class="hint">
-      ・先按「❶ 分配並顯示比例」產生結果<br>
-      ・❷ 下載 Web_ARA → 只下載 Web-ARA txt<br>
-      ・❸ 下載 Web_KEY/TG → 只下載 Web-Key + Web-TG txt<br>
-      ・❹ 下載 Bin → Bin-ARA 各自一個 txt<br>
-      ・不使用 ZIP，不會被 Windows 擋<br>
+  <!-- Step 4：分配 & 下載 -->
+  <section class="card">
+    <div class="card-head">
+      <div class="step">
+        <div class="step-badge">4</div>
+        <div class="card-title">分配並下載（Web/Bin 分開下載）</div>
+      </div>
+      <div class="toggle-btn" onclick="toggleNote('note-download', this)">ⓘ 顯示說明</div>
     </div>
 
-    <div style="margin-top:6px;">
+    <div id="note-download" class="note-box hidden">
+使用流程：
+1) 先按「❶ 分配並顯示比例」產生結果
+2) 需要重新亂數 → 按「重新分配」
+3) ✅ 確認比例 OK 後再下載
+   ・❷ 下載 Web_ARA → 只下載 Web-ARA
+   ・❸ 下載 Web_KEY/TG → 只下載 Web-Key + Web-TG
+   ・❹ 下載 Bin → Bin-ARA 各自一個 txt
+   ・❺ 下載 Download_All → 整合全部區塊（新版格式）
+
+⚠️ 不使用 ZIP（避免 Windows 擋下載）
+    </div>
+
+    <div class="actions" style="justify-content:flex-start;">
       <button class="btn-primary" id="allocate-btn">❶ 分配並顯示比例</button>
-      <button class="btn" id="rerun-btn" disabled>重新分配</button>
+      <button class="btn-secondary" id="rerun-btn" disabled>重新分配</button>
+    </div>
+
+    <div class="actions" style="justify-content:flex-start; margin-top:6px;">
       <button class="btn" id="download-web-ara-btn" disabled>❷ 下載 Web_ARA 檔案</button>
       <button class="btn" id="download-web-keytg-btn" disabled>❸ 下載 Web_KEY/TG 檔案</button>
       <button class="btn" id="download-bin-btn" disabled>❹ 下載 Bin 檔案</button>
@@ -234,9 +462,24 @@
     </div>
 
     <div id="summary-area" class="hint"></div>
-  </div>
+  </section>
 
 <script>
+/* =========================================================
+   ✅ GENv10 UI：說明展開/收合（只加這個 UI 功能）
+========================================================= */
+function toggleNote(id, btnEl) {
+  const note = document.getElementById(id);
+  if (!note) return;
+  if (note.classList.contains('hidden')) {
+    note.classList.remove('hidden');
+    btnEl.textContent = 'ⓘ 隱藏說明';
+  } else {
+    note.classList.add('hidden');
+    btnEl.textContent = 'ⓘ 顯示說明';
+  }
+}
+
 /* ---------------------------------------------------------
    全域變數 & DOM
 --------------------------------------------------------- */
@@ -323,6 +566,7 @@ function formatAraLine(r, araIdOverride) {
 
 /* ---------------------------------------------------------
    建立 Web / Bin 列
+   （只改 UI class：刪除按鈕加上 btn / btn-danger）
 --------------------------------------------------------- */
 function createWebRow() {
   const tr = document.createElement("tr");
@@ -338,20 +582,27 @@ function createWebRow() {
       </select>
     </td>
 
-    <td><input type="text" class="web-tg-cnt" placeholder="5-10"></td>
+<td class="uniform-cell">
+  <input type="text" class="web-tg-cnt" placeholder="0-10">
+</td>
 
-    <td>
-      <div class="kta-row">
-        <input type="number" class="kta kta-key" placeholder="Key" step="0.01">
-        <input type="number" class="kta kta-tg"  placeholder="TG"  step="0.01">
-        <input type="number" class="kta kta-ara" placeholder="ARA" step="0.01">
-      </div>
-    </td>
+<td class="uniform-cell">
+  <div class="kta-row">
+    <input type="number" class="kta kta-key" placeholder="Key" step="0.01">
+    <input type="number" class="kta kta-tg"  placeholder="TG"  step="0.01">
+    <input type="number" class="kta kta-ara" placeholder="ARA" step="0.01">
+  </div>
+</td>
 
-    <td><input type="number" class="web-red" step="0.01"></td>
-    <td><input type="number" class="web-other" step="0.01"></td>
+<td class="uniform-cell">
+  <input type="number" class="web-red" step="0.01">
+</td>
 
-    <td><button class="btn-danger btn-delete-row">刪除</button></td>
+<td class="uniform-cell">
+  <input type="number" class="web-other" step="0.01">
+</td>
+
+    <td><button class="btn btn-danger btn-delete-row">刪</button></td>
   `;
   tr.querySelector(".btn-delete-row").onclick = () => tr.remove();
   return tr;
@@ -360,10 +611,10 @@ function createWebRow() {
 function createBinRow() {
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><input type="text" class="bin-co-name"></td>
-    <td><input type="text" class="bin-ara-id"></td>
-    <td><input type="number" class="bin-other-percent" step="0.01"></td>
-    <td><button class="btn-danger btn-delete-row">刪除</button></td>
+    <td class="bin-uniform"><input type="text" class="bin-co-name"></td>
+    <td class="bin-uniform"><input type="text" class="bin-ara-id"></td>
+    <td class="bin-uniform"><input type="number" class="bin-other-percent" step="0.01"></td>
+    <td class="delete-cell"><button class="btn btn-danger btn-delete-row">刪</button></td>
   `;
   tr.querySelector(".btn-delete-row").onclick = () => tr.remove();
   return tr;
@@ -882,9 +1133,6 @@ function buildAllInOne(outputs, redFileContent) {
   const sections = [];
   const keys = Object.keys(outputs || {});
 
-  /* ---------------------------
-     工具：加入一個區塊 section
-  --------------------------- */
   function pushSection(type, name, lines) {
     const lineCount = lines.length;
     let block =
@@ -895,9 +1143,7 @@ function buildAllInOne(outputs, redFileContent) {
     sections.push(block);
   }
 
-  /* ---------------------------
-     1) ARA (Web + Bin)
-  --------------------------- */
+  // 1) ARA (Web + Bin)
   keys
     .map(k => outputs[k])
     .filter(o => o.type === "web-ara" || o.type === "bin-ara")
@@ -910,9 +1156,7 @@ function buildAllInOne(outputs, redFileContent) {
       pushSection("ara", name, lines);
     });
 
-  /* ---------------------------
-     2) TG
-  --------------------------- */
+  // 2) TG
   keys
     .map(k => outputs[k])
     .filter(o => o.type === "web-tg")
@@ -925,9 +1169,7 @@ function buildAllInOne(outputs, redFileContent) {
       pushSection("tg", name, lines);
     });
 
-  /* ---------------------------
-     3) KEYIN
-  --------------------------- */
+  // 3) KEYIN
   keys
     .map(k => outputs[k])
     .filter(o => o.type === "web-key")
@@ -940,9 +1182,7 @@ function buildAllInOne(outputs, redFileContent) {
       pushSection("keyin", name, lines);
     });
 
-  /* ---------------------------
-     4) redfont (固定名稱)
-  --------------------------- */
+  // 4) redfont (固定名稱)
   if (redFileContent && redFileContent.trim()) {
     let lines = redFileContent.replace(/\r/g, "").split("\n");
     while (lines.length && lines[lines.length - 1].trim() === "") {
@@ -951,9 +1191,6 @@ function buildAllInOne(outputs, redFileContent) {
     pushSection("redfont", "", lines);
   }
 
-  /* ---------------------------
-     輸出（使用 \n，下載再轉 CRLF）
-  --------------------------- */
   return sections.join("\n");
 }
 
@@ -1115,15 +1352,15 @@ function addBinPreset(coName, araId) {
 }
 
 /* Web 預設 */
-addWebPreset("M999KG", "3K88",   "3K880186",     "dateFirst");
-addWebPreset("M999KB1", "3K01",   "3K010085", "dateFirst");
-addWebPreset("M999KB2", "3K01",   "3K010088", "dateFirst");
-addWebPreset("MM38",  "11G001", "11GPX88", "tgFirst");
-addWebPreset("MM38",  "11G001", "11G139",  "tgFirst");
+addWebPreset("M999KG", "3K88",   "3K880186", "dateFirst");
+addWebPreset("M999KB", "3KA01",  "3K010085", "dateFirst");
+addWebPreset("M999KB", "3KA02",  "3K010088", "dateFirst");
+addWebPreset("MM38",   "11G001", "11GPX88",  "tgFirst");
+addWebPreset("MM38",   "11G001", "11G139",   "tgFirst");
 
 /* Bin 預設 */
-addBinPreset("BC128",  "K39");
-addBinPreset("LIAN88", "39");
+addBinPreset("BC128",  "K39A");
+addBinPreset("LIAN88", "39A");
 
 /* ---------------------------------------------------------
    新增按鈕
@@ -1133,9 +1370,9 @@ document.getElementById("add-web-row-btn").onclick = () =>
 
 document.getElementById("add-bin-row-btn").onclick = () =>
   binTableBody.appendChild(createBinRow());
+
 </script>
 
-</div> <!-- container -->
-
+</div> <!-- page -->
 </body>
 </html>
