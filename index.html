@@ -1207,7 +1207,7 @@ function downloadWebAra(outputs) {
       const fileContent = buildFileContent(o);
       if (!fileContent) return;
 
-      const fileName = `${o.coName}_${o.araId}_ARA.txt`;
+      const fileName = `${o.coName}_${o.araId}_ARA.ara`;
       downloadTextFile(fileName, fileContent);
       count++;
     }
@@ -1254,7 +1254,7 @@ function downloadBin(outputs) {
       const fileContent = buildFileContent(o);
       if (!fileContent) return;
 
-      const fileName = `${o.coName}_${o.araId}_ARA.txt`;
+      const fileName = `${o.coName}_${o.araId}_ARA.ara`;
       downloadTextFile(fileName, fileContent);
       count++;
     }
